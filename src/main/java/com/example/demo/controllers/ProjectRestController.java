@@ -39,4 +39,7 @@ public class ProjectRestController {
 		}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
 				"La personne avec l'id " + id + "n'existe pas"));
 	}
+	
+	
+	
 }
