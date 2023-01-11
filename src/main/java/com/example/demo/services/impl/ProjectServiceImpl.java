@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.entities.Project;
+import com.example.demo.repository.PersonRepository;
 import com.example.demo.repository.ProjectRepository;
 import com.example.demo.services.IProjectService;
 
@@ -15,6 +16,9 @@ public class ProjectServiceImpl implements IProjectService {
 
 	@Autowired
 	private ProjectRepository projectRepository;
+
+	@Autowired
+	private PersonRepository personRepository;
 
 	@Override
 	public List<Project> findAll() {
@@ -45,8 +49,26 @@ public class ProjectServiceImpl implements IProjectService {
 		// TODO Auto-generated method stub
 		return projectRepository.findProjectByPersonsId(idPerson);
 	}
-	
-	
-	
+
+	@Override
+	public Optional<Project> saveOneProjectByPerson(long idPerson, Project project) {
+		return personRepository.findById(idPerson).map(personRepository -> {
+			Project p = new Project();
+			p.setTitle(project.getTitle());
+			personRepository.getProjects().add(project);
+			projectRepository.save(project);
+			return p;
+		});
+
+	}
+
+	@Override
+	public Optional<Project> assignOneProjectByPerson(long idPerson, Long idProject) {
+		return personRepository.findById(idPerson).map(person -> {
+			Project p = projectRepository.findById(idProject).get();
+			person.getProjects().add(p);
+			return projectRepository.save(p);
+		});
+	}
 
 }
